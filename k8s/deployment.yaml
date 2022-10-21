@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pod-exporter
+  name: pod-exporter
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: pod-exporter
+  
+  template:
+    metadata:
+      labels:
+        app: pod-exporter
+        metrics: enabled
+
+    spec:  
+      nodeSelector:
+        role: management
+
+      serviceAccountName: pod-exporter
+      automountServiceAccountToken: true
+
+      containers:
+      - name: pod-exporter
+        image: mentalistdev/monitoring-pods:1.1.0
+        imagePullPolicy: IfNotPresent
+
+        ports:
+        - name: http
+          containerPort: 80
+
+        livenessProbe:
+          httpGet:
+            path: /status
+            port: 80
+          initialDelaySeconds: 5
+          timeoutSeconds: 5

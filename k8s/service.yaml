@@ -1,0 +1,11 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: pod-exporter
+  namespace: monitoring
+spec:
+  selector:
+    app: pod-exporter
+  ports:
+  - port: 80
+    targetPort: 80
